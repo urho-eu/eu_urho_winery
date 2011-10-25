@@ -1,0 +1,16 @@
+version: 0.0.1
+
+requires:
+    midgardmvc_helper_attachmentserver:
+        - {type: github, user: feri, repository: midgardmvc_helper_attachmentserver, branch: master}
+
+process_injector: eu_urho_winery_injector
+template_injector: eu_urho_winery_injector
+
+routes:
+    wine_read:
+        path: /read/{$wine}
+        controller: eu_urho_winery_controllers_wine
+        action: read
+        template_aliases:
+            content: euw-show-wine

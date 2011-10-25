@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Schema xmlns="http://www.midgard-project.org/repligard/1.4">
+
+    <type name="eu_urho_winery_plantation" table="eu_urho_winery_plantation">
+        <property name="id" type="unsigned integer" primaryfield="id">
+            <description>Local non-replication-safe database identifier</description>
+        </property>
+        <property name="title" type="string">
+            <description>Short name of the vine</description>
+            <required>true</required>
+            <property>dcterms:title</property>
+        </property>
+        <property name="description" type="text">
+            <description>Textual description of the plantation</description>
+            <property>sioc:content</property>
+            <contenttype>html</contenttype>
+        </property>
+        <property name="size" type="float">
+            <description>Vine size in acres</description>
+            <property>sioc:content</property>
+            <contenttype>float</contenttype>
+        </property>
+        <property name="stocks" type="integer">
+            <description>Vine stock number</description>
+            <property>sioc:content</property>
+            <contenttype>number</contenttype>
+        </property>
+        <property name="system" type="string">
+            <description>The support system the vine is grown with</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="trunkheadheight" type="float">
+            <description>The height of the trunks in meter</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="trunkdistance" type="float">
+            <description>The distance between two trunks in meter</description>
+            <property>sioc:content</property>
+            <contenttype>float</contenttype>
+        </property>
+        <property name="trunkdensity" type="unsigned integer">
+            <description>The number of trunks within an acre</description>
+            <property>sioc:content</property>
+            <contenttype>float</contenttype>
+        </property>
+        <property name="rowdistance" type="float">
+            <description>The distance between two rows in meter</description>
+            <property>sioc:content</property>
+            <contenttype>float</contenttype>
+        </property>
+    </type>
+
+    <type name="eu_urho_winery_harvest" table="eu_urho_winery_harvest" parent="eu_urho_winery_plantation">
+        <property name="id" type="unsigned integer" primaryfield="id">
+            <description>Local non-replication-safe database identifier</description>
+        </property>
+        <property name="title" type="string">
+            <description>Short name of the harvest</description>
+            <property>dcterms:title</property>
+        </property>
+        <property name="description" type="text">
+            <description>Textual description of the harvest</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="date" type="datetime">
+            <description>The date of the harvest</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="volume" type="float">
+            <description>The volume of harvested must in liters</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="sugar" type="text">
+            <description>The must sugar concentration in MM°</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="plantation" type="unsigned integer" link="eu_urho_winery_plantation:id" parentfield="plantation">
+            <description>Plantation where the harvest is from</description>
+            <property>foaf:primaryTopic</property>
+        </property>
+    </type>
+
+    <type name="eu_urho_winery_wine" table="eu_urho_winery_wine">
+        <property name="id" type="unsigned integer" primaryfield="id">
+            <description>Local non-replication-safe database identifier</description>
+        </property>
+        <property name="title" type="string">
+            <description>Short name of the wine</description>
+            <property>dcterms:title</property>
+        </property>
+        <property name="description" type="text">
+            <description>Textual description of the wine</description>
+            <property>sioc:content</property>
+            <contenttype>html</contenttype>
+        </property>
+        <property name="bottles" type="unsigned integer">
+            <description>Number of bottles produced</description>
+            <property>sioc:content</property>
+            <contenttype>text</contenttype>
+        </property>
+    </type>
+
+</Schema>
