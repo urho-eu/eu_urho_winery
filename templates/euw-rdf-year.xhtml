@@ -1,4 +1,4 @@
-      <article tal:attributes="typeof year/rdfmapper/typeof; mgd:baseurl request/uri; about year/rdfmapper/about; mgd:urlpattern year/urlpattern">
+      <article tal:attributes="typeof year/rdfmapper/typeof; mgd:baseurl request/uri; about year/rdfmapper/about; mgd:urlpattern current_component/urlpattern">
         <a tal:condition="not: current_component/admin" tal:attributes="href year/localurl">
           <h1 tal:content="year/title" tal:attributes="property year/rdfmapper/title">Title</h1>
         </a>
