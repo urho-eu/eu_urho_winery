@@ -10,14 +10,14 @@ class eu_urho_winery_injector
     public function inject_process(midgardmvc_core_request $request)
     {
         static $connected = false;
-
+/*
         if ( ! $connected)
         {
             // Subscribe to content changed signals from Midgard
             midgard_object_class::connect_default('eu_urho_winery_wine', 'action-create', array('eu_urho_winery_injector', 'check_node'), array($request));
             $connected = true;
         }
-
+*/
         $component = $request->get_node()->get_component();
     }
 
@@ -36,6 +36,7 @@ class eu_urho_winery_injector
      */
     public static function check_node(eu_urho_winery_wine $wine, $params)
     {
+/*
         if ($wine->node)
         {
             return;
@@ -53,7 +54,7 @@ class eu_urho_winery_injector
         {
           return;
         }
-
+*/
         # here set whatever before writing to the database
     }
 }

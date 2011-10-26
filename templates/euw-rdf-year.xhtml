@@ -1,0 +1,13 @@
+      <article tal:attributes="typeof year/rdfmapper/typeof; mgd:baseurl request/uri; about year/rdfmapper/about; mgd:urlpattern year/urlpattern">
+        <a tal:condition="not: current_component/admin" tal:attributes="href year/localurl">
+          <h1 tal:content="year/title" tal:attributes="property year/rdfmapper/title">Title</h1>
+        </a>
+        <h1 tal:condition="true: current_component/admin" tal:content="year/title" tal:attributes="property year/rdfmapper/title">Title</h1>
+        <div class="content description" id="content-left-subright" tal:attributes="property year/rdfmapper/description" tal:content="structure year/description">
+          Description
+        </div>
+
+        <a class="year" tal:condition="true: year/localurl" tal:attributes="href year/localurl" i18n:translate="'caption_see_wines_of_year'">
+          See Wines
+        </a>
+      </article>

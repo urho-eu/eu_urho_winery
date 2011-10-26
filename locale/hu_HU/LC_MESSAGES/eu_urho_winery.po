@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: eu_urho_winery\n"
+"Report-Msgid-Bugs-To:\n"
+"PO-Revision-Date:\n"
+"Last-Translator:\n"
+"Language-Team: info <info@urho.eu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "caption_see_wines_of_year"
+msgstr "Ebben az évben készült boraink"
+
+msgid "title_years"
+msgstr "Évjáratok"
+

@@ -1,0 +1,5 @@
+# the first year when the winary produced wines
+starting_year: 2006
+
+# @todo: comment
+index_container: http://purl.org/dc/dcmitype/Collection

@@ -1,0 +1,12 @@
+  <article tal:repeat="year current_component/years">
+    <a tal:condition="true: year/localurl" tal:attributes="href year/localurl">
+      <h1 tal:content="year/title">Title</h1>
+    </a>
+    <h1 tal:condition="not: year/localurl" tal:content="year/title">Title</h1>
+    <div class="content description" id="content-left-subright" tal:content="structure year/description">
+      Description
+    </div>
+    <a tal:condition="true: year/localurl" tal:attributes="href year/localurl" i18n:translate="'caption_see_wines_of_year'">
+      See Wines
+    </a>
+  </article>

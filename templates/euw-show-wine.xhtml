@@ -1,8 +1,15 @@
-<article xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" tal:attributes="about eu_urho_winary/object/rdfmapper/about; typeof eu_urho_winery/object/rdfmapper/typeof">
-    <h1 tal:content="structure eu_urho_winery/object/title" tal:attributes="property eu_urho_winery/object/rdfmapper/title">
-      Title
-    </h1>
-    <div class="content" id="content-left-subright" tal:content="structure eu_urho_winery/object/description" tal:attributes="property eu_urho_winery/object/rdfmapper/description">
-      Description
-    </div>
-</article>
+<ul class="articles" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof eu_urho_winery/container_type; mgd:urlpattern eu_urho_winery/wines/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
+  <li tal:repeat="wine eu_urho_winery/wines">
+    <article tal:attributes="typeof wine/rdfmapper/typeof; mgd:baseurl request/uri; about wine/rdfmapper/about; mgd:urlpattern eu_urho_winery/wines/urlpattern">
+      <h1 tal:content="wine/title" tal:attributes="property wine/rdfmapper/title">
+        Title
+      </h1>
+      <div class="content" id="content-left-subright" tal:attributes="property wine/rdfmapper/description" tal:content="wine/description">
+        Description
+      </div>
+      <div class="bottles" id="content-left-subright" tal:attributes="property wine/rdfmapper/bottles" tal:content="wine/bottles">
+        Bottles
+      </div>
+    </article>
+  </li>
+</ul>
