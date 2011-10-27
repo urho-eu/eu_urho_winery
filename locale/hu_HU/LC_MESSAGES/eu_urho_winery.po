@@ -10,9 +10,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "caption_see_wines_of_year"
-msgstr "Ebben az évben készült boraink"
-
 msgid "title_years"
 msgstr "Évjáratok"
 
+msgid "title_plantations"
+msgstr "Ültetvények"
+
+msgid "caption_see_wines_of_year"
+msgstr "Ebben az évben készült boraink"
+
+msgid "caption_see_plantation"
+msgstr "Ültetvény részletei"
+
+msgid "caption_planted"
+msgstr "Telepítve"
+
+msgid "caption_description"
+msgstr "Leírás"
+
+msgid "caption_size"
+msgstr "Méret (hektár)"
+
+msgid "caption_stocks"
+msgstr "Tőkeszám"
+
+msgid "caption_system"
+msgstr "Művelésmód"
+
+msgid "caption_trunkheadheight"
+msgstr "Tőke fejmagasság (méter)"
+
+msgid "caption_trunkdistance"
+msgstr "Tőtávolság (méter)"
+
+msgid "caption_trunkdensity"
+msgstr "Tőkesűrűség (tő / hektár)"
+
+msgid "caption_rowdistance"
+msgstr "Sortávolság (méter)"

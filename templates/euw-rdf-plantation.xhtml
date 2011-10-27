@@ -1,0 +1,47 @@
+      <article class="plantation" tal:attributes="typeof plantation/rdfmapper/typeof; mgd:baseurl request/uri; about plantation/rdfmapper/about; mgd:urlpattern current_component/urlpattern">
+        <a tal:condition="not: current_component/admin" tal:attributes="href plantation/localurl">
+          <h1 tal:content="plantation/title" tal:attributes="property plantation/rdfmapper/title">Title</h1>
+        </a>
+        <h1 tal:condition="true: current_component/admin" tal:content="plantation/title" tal:attributes="property plantation/rdfmapper/title">Title</h1>
+
+        <span i18n:translate="'caption_planted'">caption</span>
+        <div class="planted" id="planted" tal:attributes="property plantation/rdfmapper/planted" tal:content="structure plantation/planted">
+          Planted
+        </div>
+        <span i18n:translate="'caption_description'">caption</span>
+        <div id="description" tal:attributes="property plantation/rdfmapper/description" tal:content="structure plantation/description">
+          Description
+        </div>
+        <span i18n:translate="'caption_size'">caption</span>
+        <div id="size" tal:attributes="property plantation/rdfmapper/size" tal:content="plantation/size">
+          Size in acres
+        </div>
+        <span i18n:translate="'caption_stocks'">caption</span>
+        <div class="stocks" tal:attributes="property plantation/rdfmapper/stocks" tal:content="plantation/stocks">
+          Vine stock number
+        </div>
+        <span i18n:translate="'caption_system'">caption</span>
+        <div class="system" tal:attributes="property plantation/rdfmapper/system" tal:content="plantation/system">
+          The support system the vine is grown with
+        </div>
+        <span i18n:translate="'caption_trunkheadheight'">caption</span>
+        <div class="trunkheadheight" tal:attributes="property plantation/rdfmapper/trunkheadheight" tal:content="plantation/trunkheadheight">
+          The height of the trunks in meter
+        </div>
+        <span i18n:translate="'caption_trunkdistance'">caption</span>
+        <div class="trunkdistance" tal:attributes="property plantation/rdfmapper/trunkdistance" tal:content="plantation/trunkdistance">
+          The distance between two trunks in meter
+        </div>
+        <span i18n:translate="'caption_trunkdensity'">caption</span>
+        <div class="trunkdensity" tal:attributes="property plantation/rdfmapper/trunkdensity" tal:content="plantation/trunkdensity">
+          The number of trunks within an acre
+        </div>
+        <span i18n:translate="'caption_rowdistance'">caption</span>
+        <div class="rowdistance" tal:attributes="property plantation/rdfmapper/rowdistance" tal:content="plantation/rowdistance">
+          The distance between two rows in meter
+        </div>
+
+        <a class="link" tal:condition="true: plantation/localurl" tal:attributes="href plantation/localurl" i18n:translate="'caption_see_plantation'">
+          See Plantation
+        </a>
+      </article>

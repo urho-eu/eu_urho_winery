@@ -81,47 +81,53 @@
         </property>
         <property name="title" type="string">
             <description>Short name of the plantation</description>
-            <property>dcterms:title</property>
+            <property>plantation:title</property>
             <required>true</required>
+            <contenttype>text</contenttype>
+        </property>
+        <property name="planted" type="string">
+            <description>Date when plantation was made</description>
+            <property>plantation:planted</property>
+            <contenttype>datetime</contenttype>
         </property>
         <property name="description" type="text">
             <description>Textual description of the plantation</description>
-            <property>sioc:content</property>
+            <property>plantation:description</property>
             <contenttype>html</contenttype>
         </property>
         <property name="size" type="float">
             <description>Plantation size in acres</description>
-            <property>sioc:content</property>
+            <property>plantation:size</property>
             <contenttype>float</contenttype>
         </property>
         <property name="stocks" type="integer">
             <description>Vine stock number</description>
-            <property>sioc:content</property>
-            <contenttype>number</contenttype>
+            <property>plantation:stocks</property>
+            <contenttype>integer</contenttype>
         </property>
         <property name="system" type="string">
             <description>The support system the vine is grown with</description>
-            <property>sioc:content</property>
+            <property>plantation:system</property>
             <contenttype>text</contenttype>
         </property>
         <property name="trunkheadheight" type="float">
             <description>The height of the trunks in meter</description>
-            <property>sioc:content</property>
-            <contenttype>text</contenttype>
+            <property>plantation:trunkheadheight</property>
+            <contenttype>float</contenttype>
         </property>
         <property name="trunkdistance" type="float">
             <description>The distance between two trunks in meter</description>
-            <property>sioc:content</property>
+            <property>plantation:trunkdistance</property>
             <contenttype>float</contenttype>
         </property>
         <property name="trunkdensity" type="unsigned integer">
             <description>The number of trunks within an acre</description>
-            <property>sioc:content</property>
+            <property>plantation:trunkdensity</property>
             <contenttype>float</contenttype>
         </property>
         <property name="rowdistance" type="float">
             <description>The distance between two rows in meter</description>
-            <property>sioc:content</property>
+            <property>plantation:rowdistance</property>
             <contenttype>float</contenttype>
         </property>
     </type>

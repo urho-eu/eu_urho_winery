@@ -1,5 +1,5 @@
 <?php
-class eu_urho_winery_controllers_wine extends eu_urho_winery_controllers_base
+class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_baseclasses_crud
 {
     /**
      * Calls the CRUD constructor and
@@ -15,7 +15,6 @@ class eu_urho_winery_controllers_wine extends eu_urho_winery_controllers_base
      */
     public function load_object(array $args)
     {
-        parent::load_object(array('class' => get_class($this), 'id' => $args['wine']));
     }
 
     /**
@@ -23,7 +22,6 @@ class eu_urho_winery_controllers_wine extends eu_urho_winery_controllers_base
      */
     public function prepare_new_object()
     {
-        parent::load_object(array('class' => get_class($this)));
     }
 
     /**

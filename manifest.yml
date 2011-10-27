@@ -14,6 +14,18 @@ routes:
         action: years
         template_aliases:
             content: euw-show-year
+    plantation_index:
+        path: /plantation
+        controller: eu_urho_winery_controllers_plantation
+        action: plantations
+        template_aliases:
+            content: euw-show-plantation
+    plantation_read:
+        path: /plantation/{$plantation}
+        controller: eu_urho_winery_controllers_plantation
+        action: plantations
+        template_aliases:
+            content: euw-show-plantation
     year_read:
         path: /{$year}
         controller: eu_urho_winery_controllers_year

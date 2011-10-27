@@ -1,0 +1,17 @@
+<tal:block tal:condition="true: current_component/addplantation">
+  <h2 i18n:translate="'title_plantations'">Plantations</h2>
+  <ul tal:condition="true: current_component/container_type" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof current_component/container_type; mgd:urlpattern current_component/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
+    <li tal:repeat="plantation current_component/plantations">
+      <mgd:include>euw-rdf-plantation</mgd:include>
+    </li>
+  </ul>
+</tal:block>
+
+<tal:block tal:condition="not: current_component/addplantation">
+  <tal:block tal:condition="true: current_component/admin" tal:define="plantation current_component/plantation">
+    <mgd:include>euw-rdf-plantation</mgd:include>
+  </tal:block>
+  <tal:block tal:condition="not: current_component/admin">
+    <mgd:include>euw-nonrdf-plantation</mgd:include>
+  </tal:block>
+</tal:block>

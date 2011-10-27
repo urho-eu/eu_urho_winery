@@ -10,10 +10,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "caption_see_wines_of_year"
-msgstr "Wines produced in this year"
-
 msgid "title_years"
 msgstr "Years"
 
+msgid "title_plantations"
+msgstr "Plantations"
 
+msgid "caption_see_wines_of_year"
+msgstr "Wines produced in this year"
+
+msgid "caption_see_plantation"
+msgstr "See details of plantation"
+
+msgid "caption_planted"
+msgstr "Planted"
+
+msgid "caption_description"
+msgstr "Description"
+
+msgid "caption_size"
+msgstr "Size (acres)"
+
+msgid "caption_stocks"
+msgstr "Stocks (piece)"
+
+msgid "caption_system"
+msgstr "System"
+
+msgid "caption_trunkheadheight"
+msgstr "Trunk head height (m)"
+
+msgid "caption_trunkdistance"
+msgstr "Trunk distance (m)"
+
+msgid "caption_trunkdensity"
+msgstr "Trunk density (piece / acre)"
+
+msgid "caption_rowdistance"
+msgstr "Raw distance (m)"
