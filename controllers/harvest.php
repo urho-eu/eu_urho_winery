@@ -23,7 +23,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         {
             try
             {
-                $qs = $this->prepare_qs($args['harvest']);
+                $qs = $this->prepare_qs(null, $args['harvest']);
                 $qs->execute();
                 $harvests = $qs->list_objects();
                 if (count($harvests))
@@ -76,7 +76,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         (
             'harvest_read', array
             (
-                'harvest' => $this->object->title
+                'harvest' => $this->object->name
             ),
             $this->request
         );
@@ -91,7 +91,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         (
             'harvest_read', array
             (
-                'harvest' => $this->object->title
+                'harvest' => $this->object->name
             ),
             $this->request
         );
@@ -102,6 +102,9 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
      */
     public function get_harvests(array $args)
     {
+        // todo: complain if no years registered
+        // todo: complain if no plantations registered
+
         $changed_harvests = array();
         $this->data['admin'] = false;
         $this->data['addharvest'] = false;
@@ -115,7 +118,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
             throw new midgardmvc_exception_notfound("Please specify a valid harvest");
         }
 
-        $qs = $this->prepare_qs((isset($args['harvest'])) ? $args['harvest'] : '');
+        $qs = $this->prepare_qs(null, (isset($args['harvest'])) ? $args['harvest'] : '');
         $qs->execute();
         $harvests = $qs->list_objects();
 
@@ -133,12 +136,25 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         $qs->execute();
         $years = $qs->list_objects();
         $this->data['years'] = new midgardmvc_ui_create_container();
-        $dummy = new eu_urho_winery_year();
-        $this->data['years']->set_placeholder($dummy);
+        //$dummy = new eu_urho_winery_year();
+        //$this->data['years']->set_placeholder($dummy);
 
         foreach ($years as $year)
         {
             $this->data['years']->attach($year);
+        }
+
+        // get all plantations
+        $qs = eu_urho_winery_controllers_plantation::prepare_qs();
+        $qs->execute();
+        $plantations = $qs->list_objects();
+        $this->data['plantations'] = new midgardmvc_ui_create_container();
+        //$dummy = new eu_urho_winery_plantation();
+        //$this->data['plantations']->set_placeholder($dummy);
+
+        foreach ($plantations as $plantation)
+        {
+            $this->data['plantations']->attach($plantation);
         }
 
         foreach ($harvests as $harvest)
@@ -148,7 +164,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
 
             if (! isset($args['harvest']))
             {
-                $harvest->localurl = $this->mvc->dispatcher->generate_url('harvest_read', array('year' => $harvest->year, 'harvest' => $harvest->title), $this->request);
+                $harvest->localurl = $this->mvc->dispatcher->generate_url('harvest_read', array('year' => $harvest->year, 'harvest' => $harvest->name), $this->request);
             }
 
             $changed_harvests[] = $harvest;
@@ -163,9 +179,9 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
             $this->data['addharvest'] = true;
             // Define placeholder to be used with UI on empty containers
 
-#            $dummy = new eu_urho_winery_harvest();
+            $dummy = new eu_urho_winery_harvest();
             $this->data['harvests'] = new midgardmvc_ui_create_container();
-#            $this->data['harvests']->set_placeholder($dummy);
+            $this->data['harvests']->set_placeholder($dummy);
 
             if (! count($changed_harvests))
             {
@@ -198,17 +214,39 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
     /**
      * Returns a QuerySelect object
      */
-    private function prepare_qs($harvest = null)
+    public function prepare_qs($year = null, $harvest = null, $exception_guid = null)
     {
+        $qc = null;
+        $exception_constraint = null;
+        $approved_constraint = null;
+
         $storage = new midgard_query_storage('eu_urho_winery_harvest');
         $qs = new midgard_query_select($storage);
+        $qc = new midgard_query_constraint_group('AND');
 
-        $approved_constraint = null;
+         if ($year)
+        {
+            $year_constraint = new midgard_query_constraint(
+                new midgard_query_property('year'),
+                '=',
+                new midgard_query_value($year)
+            );
+        }
+        else
+        {
+            $year_constraint = new midgard_query_constraint(
+                new midgard_query_property('year'),
+                '<>',
+                new midgard_query_value(0)
+            );
+        }
+        $qc->add_constraint($year_constraint);
+        unset($year_constraint);
 
         if ($harvest)
         {
             $harvest_constraint = new midgard_query_constraint(
-                new midgard_query_property('title'),
+                new midgard_query_property('name'),
                 '=',
                 new midgard_query_value($harvest)
             );
@@ -216,11 +254,13 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         else
         {
             $harvest_constraint = new midgard_query_constraint(
-                new midgard_query_property('title'),
+                new midgard_query_property('name'),
                 '<>',
                 new midgard_query_value('')
             );
         }
+        $qc->add_constraint($harvest_constraint);
+        unset($harvest_constraint);
 
         if ( ! midgardmvc_ui_create_injector::can_use() )
         {
@@ -230,29 +270,23 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
                 '=',
                 new midgard_query_value(true)
             );
-        }
-
-        if (   $harvest_constraint
-            && $approved_constraint)
-        {
-            $qc = new midgard_query_constraint_group('AND');
-            $qc->add_constraint($harvest_constraint);
             $qc->add_constraint($approved_constraint);
             unset($approved_constraint);
         }
-        else
+
+        if ($exception_guid)
         {
-            $qc = $harvest_constraint;
+            $exception_constraint = new midgard_query_constraint(
+                new midgard_query_property('guid'),
+                '<>',
+                new midgard_query_value($exception_guid)
+            );
+            $qc->add_constraint($exception_constraint);
+            unset($exception_constraint);
         }
 
-        unset($harvest_constraint);
-
-        $qs->add_order(new midgard_query_property('title'), SORT_ASC);
-
-        if ($qc)
-        {
-            $qs->set_constraint($qc);
-        }
+        $qs->set_constraint($qc);
+        $qs->add_order(new midgard_query_property('name'), SORT_ASC);
 
         return $qs;
     }

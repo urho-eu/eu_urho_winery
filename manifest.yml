@@ -21,7 +21,7 @@ routes:
         template_aliases:
             content: euw-show-year
     plantation_index:
-        path: /plantation
+        path: /plantation/
         controller: eu_urho_winery_controllers_plantation
         action: plantations
         template_aliases:
@@ -50,10 +50,21 @@ routes:
         action: harvests
         template_aliases:
             content: euw-show-harvest
-    wine_read:
-        path: /wine/{$int:year}/{$guid:wine}
+    wine_index:
+        path: /wine/
         controller: eu_urho_winery_controllers_wine
-        action: wines_for_year
+        action: wines
         template_aliases:
             content: euw-show-wine
-
+    wine_year_index:
+        path: /wine/{$int:year}
+        controller: eu_urho_winery_controllers_wine
+        action: wines
+        template_aliases:
+            content: euw-show-wine
+    wine_read:
+        path: /wine/{$int:year}/{$string:wine}
+        controller: eu_urho_winery_controllers_wine
+        action: wines
+        template_aliases:
+            content: euw-show-wine

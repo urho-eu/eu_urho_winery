@@ -1,15 +1,17 @@
-<ul class="articles" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof eu_urho_winery/container_type; mgd:urlpattern eu_urho_winery/wines/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
-  <li tal:repeat="wine eu_urho_winery/wines">
-    <article tal:attributes="typeof wine/rdfmapper/typeof; mgd:baseurl request/uri; about wine/rdfmapper/about; mgd:urlpattern eu_urho_winery/wines/urlpattern">
-      <h1 tal:content="wine/title" tal:attributes="property wine/rdfmapper/title">
-        Title
-      </h1>
-      <div class="content" id="content-left-subright" tal:attributes="property wine/rdfmapper/description" tal:content="wine/description">
-        Description
-      </div>
-      <div class="bottles" id="content-left-subright" tal:attributes="property wine/rdfmapper/bottles" tal:content="wine/bottles">
-        Bottles
-      </div>
-    </article>
-  </li>
-</ul>
+<tal:block tal:condition="true: current_component/addwine">
+  <h2 i18n:translate="'title_wines'">wines</h2>
+  <ul tal:condition="true: current_component/container_type" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof current_component/container_type; mgd:urlpattern current_component/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
+    <li tal:repeat="wine current_component/wines">
+      <mgd:include>euw-rdf-wine</mgd:include>
+    </li>
+  </ul>
+</tal:block>
+
+<tal:block tal:condition="not: current_component/addwine">
+  <tal:block tal:condition="true: current_component/admin" tal:define="wine current_component/wine">
+    <mgd:include>euw-rdf-wine</mgd:include>
+  </tal:block>
+  <tal:block tal:condition="not: current_component/admin">
+    <mgd:include>euw-nonrdf-wine</mgd:include>
+  </tal:block>
+</tal:block>

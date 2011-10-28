@@ -76,7 +76,7 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
         (
             'plantation_read', array
             (
-                'plantation' => $this->object->title
+                'plantation' => $this->object->name
             ),
             $this->request
         );
@@ -91,7 +91,7 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
         (
             'plantation_read', array
             (
-                'plantation' => $this->object->title
+                'plantation' => $this->object->name
             ),
             $this->request
         );
@@ -108,12 +108,13 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
         $this->data['plantations'] = array();
         $this->data['container_type'] = false;
 
+/*
         if (   ! isset($args['plantation'])
             && ! midgardmvc_ui_create_injector::can_use())
         {
             throw new midgardmvc_exception_notfound("Please specify a valid plantation");
         }
-
+*/
         $qs = $this->prepare_qs((isset($args['plantation'])) ? $args['plantation'] : '');
 
         $qs->execute();
@@ -130,7 +131,7 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
 
             if (! isset($args['plantation']))
             {
-                $plantation->localurl = $this->mvc->dispatcher->generate_url('plantation_read', array('plantation' => $plantation->title), $this->request);
+                $plantation->localurl = $this->mvc->dispatcher->generate_url('plantation_read', array('plantation' => $plantation->name), $this->request);
             }
 
             $changed_plantations[] = $plantation;
@@ -181,17 +182,26 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
     /**
      * Returns a QuerySelect object
      */
-    private function prepare_qs($plantation = null)
+    public function prepare_qs($plantation = null, $exception_guid = null)
     {
+        $qc = null;
+        $exception_constraint = null;
+        $approved_constraint = null;
+
         $storage = new midgard_query_storage('eu_urho_winery_plantation');
         $qs = new midgard_query_select($storage);
+        $qc = new midgard_query_constraint_group('AND');
 
-        $approved_constraint = null;
+        $qc->add_constraint(new midgard_query_constraint(
+            new midgard_query_property('id'),
+            '>',
+            new midgard_query_value(0)
+        ));
 
         if ($plantation)
         {
             $plantation_constraint = new midgard_query_constraint(
-                new midgard_query_property('title'),
+                new midgard_query_property('name'),
                 '=',
                 new midgard_query_value($plantation)
             );
@@ -199,11 +209,13 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
         else
         {
             $plantation_constraint = new midgard_query_constraint(
-                new midgard_query_property('title'),
+                new midgard_query_property('name'),
                 '<>',
                 new midgard_query_value('')
             );
         }
+        $qc->add_constraint($plantation_constraint);
+        unset($plantation_constraint);
 
         if ( ! midgardmvc_ui_create_injector::can_use() )
         {
@@ -213,29 +225,25 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
                 '=',
                 new midgard_query_value(true)
             );
-        }
-
-        if (   $plantation_constraint
-            && $approved_constraint)
-        {
-            $qc = new midgard_query_constraint_group('AND');
-            $qc->add_constraint($plantation_constraint);
             $qc->add_constraint($approved_constraint);
             unset($approved_constraint);
         }
-        else
+
+        if ($exception_guid)
         {
-            $qc = $plantation_constraint;
+            $exception_constraint = new midgard_query_constraint(
+                new midgard_query_property('guid'),
+                '<>',
+                new midgard_query_value($exception_guid)
+            );
+            $qc->add_constraint($exception_constraint);
+            unset($exception_constraint);
         }
+
+        $qs->add_order(new midgard_query_property('name'), SORT_ASC);
+        $qs->set_constraint($qc);
 
         unset($plantation_constraint);
-
-        $qs->add_order(new midgard_query_property('title'), SORT_DESC);
-
-        if ($qc)
-        {
-            $qs->set_constraint($qc);
-        }
 
         return $qs;
     }

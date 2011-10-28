@@ -153,7 +153,13 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
 
         $changed_years = array();
 
-        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url('year_read', array('year' => 'year'), $this->request);
+        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
+            'year_read',
+            array(
+                'year' => $this->mvc->configuration->starting_year,
+            ),
+            $this->request
+        );
 
         foreach ($years as $year)
         {
@@ -220,29 +226,39 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
     /**
      * Returns a QuerySelect object
      */
-    private function prepare_qs($year = null)
+    public function prepare_qs($year = null)
     {
+        $qc = null;
+        $approved_constraint = null;
+
         $storage = new midgard_query_storage('eu_urho_winery_year');
         $qs = new midgard_query_select($storage);
+        $qc = new midgard_query_constraint_group('AND');
 
-        $approved_constraint = null;
+        $qc->add_constraint(new midgard_query_constraint(
+            new midgard_query_property('id'),
+            '>',
+            new midgard_query_value(0)
+        ));
 
         if (! $year)
         {
-          $year_constraint = new midgard_query_constraint(
-              new midgard_query_property('title'),
-              '>=',
-              new midgard_query_value($this->mvc->configuration->starting_year)
-          );
+            $year_constraint = new midgard_query_constraint(
+                new midgard_query_property('title'),
+                '>=',
+                new midgard_query_value($this->mvc->configuration->starting_year)
+            );
         }
         else
         {
-          $year_constraint = new midgard_query_constraint(
-              new midgard_query_property('title'),
-              '=',
-              new midgard_query_value($year)
-          );
+            $year_constraint = new midgard_query_constraint(
+                new midgard_query_property('title'),
+                '=',
+                new midgard_query_value($year)
+            );
         }
+        $qc->add_constraint($year_constraint);
+        unset($year_constraint);
 
         if ( ! midgardmvc_ui_create_injector::can_use() )
         {
@@ -252,25 +268,12 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
                 '=',
                 new midgard_query_value(true)
             );
-        }
-
-        if (   $year_constraint
-            && $approved_constraint)
-        {
-            $qc = new midgard_query_constraint_group('AND');
-            $qc->add_constraint($year_constraint);
             $qc->add_constraint($approved_constraint);
             unset($approved_constraint);
         }
-        else
-        {
-            $qc = $year_constraint;
-        }
 
-        unset($year_constraint);
-
-        $qs->add_order(new midgard_query_property('title'), SORT_DESC);
         $qs->set_constraint($qc);
+        $qs->add_order(new midgard_query_property('title'), SORT_DESC);
 
         return $qs;
     }

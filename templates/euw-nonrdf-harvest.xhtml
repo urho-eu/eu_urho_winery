@@ -1,12 +1,12 @@
-  <article tal:repeat="plantation current_component/plantations">
-    <a tal:condition="true: plantation/localurl" tal:attributes="href plantation/localurl">
-      <h1 tal:content="plantation/title">Title</h1>
+  <article tal:repeat="harvest current_component/harvests">
+    <a tal:condition="true: harvest/localurl" tal:attributes="href harvest/localurl">
+      <h1 tal:content="harvest/title">Title</h1>
     </a>
-    <h1 tal:condition="not: plantation/localurl" tal:content="plantation/title">Title</h1>
-    <div class="content description" id="content-left-subright" tal:content="structure plantation/description">
+    <h1 tal:condition="not: harvest/localurl" tal:content="harvest/title">Title</h1>
+    <div class="content description" id="content-left-subright" tal:content="structure harvest/description">
       Description
     </div>
-    <a tal:condition="true: plantation/localurl" tal:attributes="href plantation/localurl" i18n:translate="'caption_see_plantation'">
-      See Plantation
+    <a tal:condition="true: harvest/localurl" tal:attributes="href harvest/localurl" i18n:translate="'caption_see_harvest'">
+      See Harvest
     </a>
   </article>
