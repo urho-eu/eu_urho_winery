@@ -1,0 +1,28 @@
+      <article class="wine" tal:attributes="typeof wine/rdfmapper/typeof; mgd:baseurl request/uri; about wine/rdfmapper/about; mgd:urlpattern current_component/urlpattern">
+        <a tal:condition="not: current_component/admin" tal:attributes="href wine/localurl">
+          <h1 tal:content="wine/title" tal:attributes="property wine/rdfmapper/title">Title</h1>
+        </a>
+        <h1 tal:condition="true: current_component/admin" tal:content="wine/title" tal:attributes="default 'title'; property wine/rdfmapper/title">Title</h1>
+
+        <span i18n:translate="'caption_description'">caption</span>
+        <div id="description" tal:attributes="property wine/rdfmapper/description; default 'description'" tal:content="structure wine/description">
+          Description
+        </div>
+
+        <span i18n:translate="'caption_bottles'">caption</span>
+        <div id="volume" tal:attributes="property wine/rdfmapper/bottles; default 'bottles'" tal:content="wine/bottles">
+          Bottles produced
+        </div>
+
+        <span i18n:translate="'caption_harvest'">caption</span>
+        <select id="harvestselect" tal:define="harvests current_component/harvests" onchange="jQuery('#harvest').html(jQuery('#harvestselect :selected').val()); midgardCreate.Editable.setModified(true);">
+          <option tal:repeat="harvest harvests" tal:attributes="value harvest/id">
+            ${harvest/title}, ${harvest/year}
+          </option>
+        </select>
+        <span class="hidden" id="harvest" property="wine:harvest">${wine/harvest}</span>
+
+        <a class="link" tal:condition="true: wine/localurl" tal:attributes="href wine/localurl" i18n:translate="'caption_see_wine'">
+          See wine
+        </a>
+      </article>

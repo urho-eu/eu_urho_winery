@@ -7,77 +7,88 @@
         </property>
         <property name="title" type="unsigned integer">
             <description>Year; e.g. 2010</description>
-            <property>dcterms:title</property>
+            <property>year:title</property>
             <required>true</required>
         </property>
         <property name="description" type="text">
             <description>Overview of the year</description>
-            <property>sioc:content</property>
+            <property>year:description</property>
             <contenttype>html</contenttype>
         </property>
     </type>
 
-    <type name="eu_urho_winery_wine" table="eu_urho_winery_wine">
+    <type name="eu_urho_winery_wine" table="eu_urho_winery_wine" parent="eu_urho_winery_harvest">
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
+        <property name="name" type="string">
+            <description>Unique name of the wine; generated from the title</description>
+            <required>true</required>
+        </property>
         <property name="title" type="string">
-            <description>Short name of the wine</description>
-            <property>dcterms:title</property>
+            <description>Title of the wine</description>
+            <property>wine:title</property>
             <required>true</required>
         </property>
         <property name="description" type="text">
             <description>Textual description of the wine</description>
-            <property>sioc:content</property>
+            <property>wine:description</property>
             <contenttype>text</contenttype>
         </property>
         <property name="bottles" type="unsigned integer">
-            <description>Number of bottles produced</description>
+            <description>wine:bottles</description>
         </property>
-        <property name="year" type="unsigned integer" link="eu_urho_winery_year:id" parentfield="year">
-            <description>The year when the wine was produced</description>
-            <property>foaf:primaryTopic</property>
+        <property name="harvest" type="unsigned integer" link="eu_urho_winery_harvest:id" parentfield="harvest">
+            <description>Harvest when the wines was made</description>
+            <property>wine:harvest</property>
         </property>
     </type>
 
-    <type name="eu_urho_winery_harvest" table="eu_urho_winery_harvest" parent="eu_urho_winery_plantation">
+    <type name="eu_urho_winery_harvest" table="eu_urho_winery_harvest">
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
+        <property name="name" type="string">
+            <description>Unique name of the wine; generated from the title</description>
+            <required>true</required>
+        </property>
         <property name="title" type="string">
             <description>Short name of the harvest</description>
-            <property>dcterms:title</property>
+            <property>harvest:title</property>
             <required>true</required>
         </property>
         <property name="description" type="text">
             <description>Textual description of the harvest</description>
-            <property>sioc:content</property>
-            <contenttype>text</contenttype>
-        </property>
-        <property name="date" type="datetime">
-            <description>The date of the harvest</description>
-            <property>sioc:content</property>
+            <property>harvest:description</property>
             <contenttype>text</contenttype>
         </property>
         <property name="volume" type="float">
             <description>The volume of harvested must in liters</description>
-            <property>sioc:content</property>
+            <property>harvest:volume</property>
             <contenttype>text</contenttype>
         </property>
         <property name="sugar" type="text">
             <description>The must sugar concentration in MM°</description>
-            <property>sioc:content</property>
+            <property>harvest:sugar</property>
             <contenttype>text</contenttype>
         </property>
-        <property name="plantation" type="unsigned integer" link="eu_urho_winery_plantation:id" parentfield="plantation">
+        <property name="plantation" type="unsigned integer" link="eu_urho_winery_plantation:id">
             <description>Plantation where the harvest is from</description>
-            <property>foaf:primaryTopic</property>
+            <property>harvest:plantation</property>
+        </property>
+        <property name="year" type="unsigned integer" link="eu_urho_winery_year:title">
+            <description>Year the harvest was done</description>
+            <property>harvest:year</property>
         </property>
     </type>
 
     <type name="eu_urho_winery_plantation" table="eu_urho_winery_plantation">
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
+        </property>
+        <property name="name" type="string">
+            <description>Unique name of the wine; generated from the title</description>
+            <required>true</required>
         </property>
         <property name="title" type="string">
             <description>Short name of the plantation</description>

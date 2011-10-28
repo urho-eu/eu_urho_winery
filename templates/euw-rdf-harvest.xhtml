@@ -1,0 +1,30 @@
+      <article class="harvest" tal:attributes="typeof harvest/rdfmapper/typeof; mgd:baseurl request/uri; about harvest/rdfmapper/about; mgd:urlpattern current_component/urlpattern">
+        <a tal:condition="not: current_component/admin" tal:attributes="href harvest/localurl">
+          <h1 tal:content="harvest/title" tal:attributes="property harvest/rdfmapper/title">Title</h1>
+        </a>
+        <h1 tal:condition="true: current_component/admin" tal:content="harvest/title" tal:attributes="default 'title'; property harvest/rdfmapper/title">Title</h1>
+
+        <span i18n:translate="'caption_description'">caption</span>
+        <div id="description" tal:attributes="property harvest/rdfmapper/description; default 'description'" tal:content="structure harvest/description">
+          Description
+        </div>
+        <span i18n:translate="'caption_volume'">caption</span>
+        <div id="volume" tal:attributes="property harvest/rdfmapper/volume; default 'volume'" tal:content="harvest/volume">
+          Volume in litres
+        </div>
+        <span i18n:translate="'caption_sugar'">caption</span>
+        <div class="stocks" tal:attributes="property harvest/rdfmapper/sugar; default 'sugar'" tal:content="harvest/sugar">
+          The must sugar concentration in MM°
+        </div>
+        <span i18n:translate="'caption_year'">caption</span>
+        <select id="yearselect" tal:define="years current_component/years" onchange="jQuery('#year').html(jQuery('#yearselect :selected').val()); midgardCreate.Editable.setModified(true);">
+          <option tal:repeat="year years" tal:attributes="value year/title">
+            ${year/title}
+          </option>
+        </select>
+        <span class="hidden" id="year" property="harvest:year"></span>
+
+        <a class="link" tal:condition="true: harvest/localurl" tal:attributes="href harvest/localurl" i18n:translate="'caption_see_harvest'">
+          See harvest
+        </a>
+      </article>

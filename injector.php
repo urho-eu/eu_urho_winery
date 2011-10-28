@@ -22,6 +22,10 @@ class eu_urho_winery_injector
         if ( ! $connected)
         {
             // Subscribe to content changed signals from Midgard
+            midgard_object_class::connect_default('eu_urho_winery_wine', 'action-create', array('eu_urho_winery_injector', 'check_wine'), array($request));
+            midgard_object_class::connect_default('eu_urho_winery_wine', 'action-update', array('eu_urho_winery_injector', 'check_wine'), array($request));
+            midgard_object_class::connect_default('eu_urho_winery_harvest', 'action-create', array('eu_urho_winery_injector', 'check_harvest'), array($request));
+            midgard_object_class::connect_default('eu_urho_winery_harvest', 'action-update', array('eu_urho_winery_injector', 'check_harvest'), array($request));
             midgard_object_class::connect_default('eu_urho_winery_plantation', 'action-create', array('eu_urho_winery_injector', 'check_plantation'), array($request));
             midgard_object_class::connect_default('eu_urho_winery_plantation', 'action-update', array('eu_urho_winery_injector', 'check_plantation'), array($request));
             $connected = true;
@@ -73,12 +77,79 @@ class eu_urho_winery_injector
     /**
      * Validate and do last minute changes on plantation objects
      */
+    public static function check_wine(eu_urho_winery_wine $wine, $params)
+    {
+        $wine->title = self::cleanup_title($wine->title);
+        $wine->name = self::generate_name($wine->title);
+
+        $qs = eu_urho_winery_controllers_wine::prepare_qs($wine->harvest, $wine->name, $wine->guid);
+        $qs->execute();
+        $wines = $qs->list_objects();
+        if (count($wines))
+        {
+            //make the name unique
+            $wine->name .= time();
+        }
+    }
+
+
+    /**
+     * Validate and do last minute changes on plantation objects
+     */
     public static function check_plantation(eu_urho_winery_plantation $plantation, $params)
     {
-          // clean up
-          $plantation->title = strip_tags($plantation->title);
-          $plantation->planted = strip_tags($plantation->planted);
-          $plantation->system = strip_tags($plantation->system);
+        $plantation->title = self::cleanup_title($plantation->title);
+        $plantation->name = self::generate_name($plantation->title);
+        $plantation->planted = strip_tags($plantation->planted);
+        $plantation->system = strip_tags($plantation->system);
+
+        $qs = eu_urho_winery_controllers_plantation::prepare_qs($plantation->name, $plantation->guid);
+        $qs->execute();
+        $plantations = $qs->list_objects();
+        if (count($plantations))
+        {
+            //make the name unique
+            $plantation->name .= time();
+        }
+    }
+
+    /**
+     * Validate and do last minute changes on harvest objects
+     */
+    public static function check_harvest(eu_urho_winery_harvest $harvest, $params)
+    {
+        $harvest->title = self::cleanup_title($harvest->title);
+        $harvest->name = self::generate_name($harvest->title);
+
+        $qs = eu_urho_winery_controllers_harvest::prepare_qs($harvest->year, $harvest->name, $harvest->guid);
+        $qs->execute();
+        $harvests = $qs->list_objects();
+
+        if (count($harvests))
+        {
+            //make the name unique
+            $harvest->name .= time();
+        }
+    }
+
+    /**
+     * generates a name from a title
+     * @param string string to be cleaned up
+     * @return string
+     */
+    public function generate_name($title)
+    {
+        return preg_replace('/_+/', '_', preg_replace('/\W/', '_', strip_tags(html_entity_decode($title))));
+    }
+
+    /**
+     * Cleans up a title
+     * @param string string to be cleaned up
+     * @return string
+     */
+    public function cleanup_title($title)
+    {
+        return preg_replace('/\s+/', ' ', preg_replace('/\W/', ' ', strip_tags(html_entity_decode($title))));
     }
 }
 ?>

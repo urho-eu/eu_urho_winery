@@ -1,0 +1,12 @@
+  <article tal:repeat="wine current_component/wines">
+    <a tal:condition="true: wine/localurl" tal:attributes="href wine/localurl">
+      <h1 tal:content="wine/title">Title</h1>
+    </a>
+    <h1 tal:condition="not: wine/localurl" tal:content="wine/title">Title</h1>
+    <div class="content description" id="content-left-subright" tal:content="structure wine/description">
+      Description
+    </div>
+    <a tal:condition="true: wine/localurl" tal:attributes="href wine/localurl" i18n:translate="'caption_see_wine'">
+      See wine
+    </a>
+  </article>

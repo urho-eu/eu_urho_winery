@@ -16,6 +16,12 @@ msgstr "Years"
 msgid "title_plantations"
 msgstr "Plantations"
 
+msgid "title_harvests"
+msgstr "Harvests"
+
+msgid "title_wines"
+msgstr "Wines"
+
 msgid "caption_see_wines_of_year"
 msgstr "Wines produced in this year"
 
@@ -48,3 +54,24 @@ msgstr "Trunk density (piece / acre)"
 
 msgid "caption_rowdistance"
 msgstr "Raw distance (m)"
+
+msgid "caption_volume"
+msgstr "Volume"
+
+msgid "caption_sugar"
+msgstr "Sugar"
+
+msgid "caption_year"
+msgstr "Year"
+
+msgid "caption_see_harvest"
+msgstr "Check more details"
+
+msgid "caption_bottles"
+msgstr "Bottles"
+
+msgid "caption_harvest"
+msgstr "Harvest"
+
+msgid "caption_see_wine"
+msgstr "Details"

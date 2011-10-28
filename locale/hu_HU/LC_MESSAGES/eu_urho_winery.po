@@ -16,6 +16,12 @@ msgstr "Évjáratok"
 msgid "title_plantations"
 msgstr "Ültetvények"
 
+msgid "title_harvests"
+msgstr "Szüretek"
+
+msgid "title_wines"
+msgstr "Borok"
+
 msgid "caption_see_wines_of_year"
 msgstr "Ebben az évben készült boraink"
 
@@ -48,3 +54,24 @@ msgstr "Tőkesűrűség (tő / hektár)"
 
 msgid "caption_rowdistance"
 msgstr "Sortávolság (méter)"
+
+msgid "caption_volume"
+msgstr "Mennyiség"
+
+msgid "caption_sugar"
+msgstr "Cukorfok"
+
+msgid "caption_year"
+msgstr "Év"
+
+msgid "caption_see_harvest"
+msgstr "Részletek"
+
+msgid "caption_bottles"
+msgstr "Palack szám"
+
+msgid "caption_harvest"
+msgstr "Szüret"
+
+msgid "caption_see_wine"
+msgstr "Részletek"

@@ -1,0 +1,12 @@
+  <article tal:repeat="plantation current_component/plantations">
+    <a tal:condition="true: plantation/localurl" tal:attributes="href plantation/localurl">
+      <h1 tal:content="plantation/title">Title</h1>
+    </a>
+    <h1 tal:condition="not: plantation/localurl" tal:content="plantation/title">Title</h1>
+    <div class="content description" id="content-left-subright" tal:content="structure plantation/description">
+      Description
+    </div>
+    <a tal:condition="true: plantation/localurl" tal:attributes="href plantation/localurl" i18n:translate="'caption_see_plantation'">
+      See Plantation
+    </a>
+  </article>
