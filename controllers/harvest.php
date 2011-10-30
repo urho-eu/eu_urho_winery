@@ -204,6 +204,10 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         }
         else
         {
+            if (count($changed_harvests) == 1)
+            {
+                $this->data['harvest'] = $changed_harvests[0];
+            }
             if (! count($changed_harvests))
             {
                 throw new midgardmvc_exception_notfound("No data published for " . $args['harvest']);
@@ -224,7 +228,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         $qs = new midgard_query_select($storage);
         $qc = new midgard_query_constraint_group('AND');
 
-         if ($year)
+        if ($year)
         {
             $year_constraint = new midgard_query_constraint(
                 new midgard_query_property('year'),

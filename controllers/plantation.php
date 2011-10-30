@@ -172,6 +172,10 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
         }
         else
         {
+            if (count($changed_plantations) == 1)
+            {
+                $this->data['plantation'] = $changed_plantations[0];
+            }
             if (! count($changed_plantations))
             {
                 throw new midgardmvc_exception_notfound("No data published for " . $args['plantation']);

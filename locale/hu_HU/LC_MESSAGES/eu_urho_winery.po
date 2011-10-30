@@ -75,3 +75,10 @@ msgstr "Szüret"
 
 msgid "caption_see_wine"
 msgstr "Részletek"
+
+msgid "title_wines_produced_in_year"
+msgstr "Boraink"
+
+msgid "message_no_wines_this_year"
+msgstr "Ebből az évből még nincs elérhető borunk."
+

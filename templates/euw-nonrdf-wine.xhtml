@@ -1,9 +1,11 @@
+  <span class="message" tal:condition="not: current_component/wines" i18n:translate="'message_no_wines_this_year'">No wines</span>
+
   <article tal:repeat="wine current_component/wines">
     <a tal:condition="true: wine/localurl" tal:attributes="href wine/localurl">
-      <h1 tal:content="wine/title">Title</h1>
+      <h1 tal:content="wine/winetitle">Title</h1>
     </a>
-    <h1 tal:condition="not: wine/localurl" tal:content="wine/title">Title</h1>
-    <div class="content description" id="content-left-subright" tal:content="structure wine/description">
+    <h1 tal:condition="not: wine/localurl" tal:content="wine/winetitle">Title</h1>
+    <div class="content description" id="content-left-subright" tal:content="structure wine/winedescription">
       Description
     </div>
     <a tal:condition="true: wine/localurl" tal:attributes="href wine/localurl" i18n:translate="'caption_see_wine'">

@@ -51,7 +51,7 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         {
             // Regular user, hide unapproved articles
             // TODO: This check should be moved to authentication
-            throw new midgardmvc_exception_notfound("No data published for " . $args['wine  ']);
+            throw new midgardmvc_exception_notfound("No data published for " . $args['wine']);
         }
 
         $this->object->rdfmapper = new midgardmvc_ui_create_rdfmapper($this->object);
@@ -66,19 +66,12 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         $this->object = new eu_urho_winery_wine();
         $this->object->rdfmapper = new midgardmvc_ui_create_rdfmapper($this->object);
     }
+
     /**
      * @todo: docs
      */
     public function get_url_read()
     {
-        return $this->mvc->dispatcher->generate_url
-        (
-            'wine_read', array
-            (
-                'wine' => $this->object->name
-            ),
-            $this->request
-        );
     }
 
     /**
@@ -86,14 +79,6 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
      */
     public function get_url_update()
     {
-        return $this->mvc->dispatcher->generate_url
-        (
-            'wine_read', array
-            (
-                'wine' => $this->object->name
-            ),
-            $this->request
-        );
     }
 
     /**
@@ -108,21 +93,24 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         $this->data['wines'] = array();
         $this->data['container_type'] = 'http://purl.org/dc/dcmitype/Collection';
 
-        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
-            'wine_read',
-            array (
-                'year' => $this->mvc->configuration->starting_year,
-                'wine' => 'wine'
-            ),
-            $this->request
-        );
-
+        if (midgardmvc_ui_create_injector::can_use())
+        {
+            $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
+                'wine_read',
+                array (
+                    'year' => $this->mvc->configuration->starting_year,
+                    'wine' => 'wine'
+                ),
+                $this->request
+            );
+        }
+/*
         if (   ! isset($args['wine'])
             && ! midgardmvc_ui_create_injector::can_use())
         {
             throw new midgardmvc_exception_notfound("Please specify a valid wine");
         }
-
+*/
         $year = $this->mvc->configuration->starting_year;
         $guid = null;
 
@@ -147,9 +135,12 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         //$dummy = new eu_urho_winery_harvest();
         //$this->data['harvests']->set_placeholder($dummy);
 
-        foreach ($harvests as $harvest)
+        if (midgardmvc_ui_create_injector::can_use())
         {
-            $this->data['harvests']->attach($harvest);
+            foreach ($harvests as $harvest)
+            {
+                $this->data['harvests']->attach($harvest);
+            }
         }
 
         $qs = $this->prepare_qs((isset($args['year'])) ? $args['year'] : null, (isset($args['wine'])) ? $args['wine'] : null);
@@ -159,14 +150,20 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         foreach ($wines as $wine)
         {
             $wine->localurl = false;
-            $wine->urlpattern = $this->data['urlpattern'];
+            if (midgardmvc_ui_create_injector::can_use())
+            {
+                $wine->urlpattern = $this->data['urlpattern'];
+            }
+
+            //$harvest = new eu_urho_winery_harvest($wine->harvest);
 
             if (! isset($args['wine']))
             {
-                $wine->localurl = $this->mvc->dispatcher->generate_url('wine_read', array('year' => $wine->year, 'wine' => $wine->name), $this->request);
+                $wine->localurl = $this->mvc->dispatcher->generate_url('year_wine_read', array('year' => $wine->wineyear, 'wine' => $wine->winename), $this->request);
             }
 
             $changed_wines[] = $wine;
+            unset ($harvest);
         }
 
         $this->data['wines'] = $changed_wines;
@@ -190,7 +187,9 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
             // rdf mapping
             foreach ($changed_wines as $wine)
             {
-                $this->data['wines']->attach($wine);
+                $obj = new eu_urho_winery_wine($wine->wineguid);
+                $this->data['wines']->attach($obj);
+                unset($obj);
             }
 
             if (   (   count($changed_wines) == 1
@@ -203,11 +202,24 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         }
         else
         {
+            if (count($changed_wines) == 1)
+            {
+                $this->data['wine'] = $changed_wines[0];
+            }
             if (! count($changed_wines))
             {
-                throw new midgardmvc_exception_notfound("No data published for " . $args['wine']);
+                $this->data['wines'] = false;
+
+                if (isset($args['wine']))
+                {
+                    throw new midgardmvc_exception_notfound("No such wine");
+                }
+
+                return;
             }
         }
+
+        unset($changed_wines);
     }
 
     /**
@@ -221,7 +233,7 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
 
         $mvc = midgardmvc_core::get_instance();
 
-        $storage = new midgard_query_storage('eu_urho_winery_wine');
+        $storage = new midgard_query_storage('eu_urho_winery_wine_details');
         $qs = new midgard_query_select($storage);
         $qc = new midgard_query_constraint_group('AND');
 
@@ -233,12 +245,12 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         if ($name)
         {
             $wine_constraint = new midgard_query_constraint(
-                new midgard_query_property('name'),
+                new midgard_query_property('winename'),
                 '=',
                 new midgard_query_value($name)
             );
             $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('metadata.created'),
+                new midgard_query_property('wineyear'),
                 '=',
                 new midgard_query_value($year)
             );
@@ -246,12 +258,12 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         else
         {
             $wine_constraint = new midgard_query_constraint(
-                new midgard_query_property('name'),
+                new midgard_query_property('winename'),
                 '<>',
                 new midgard_query_value($name)
             );
             $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('metadata.created'),
+                new midgard_query_property('wineyear'),
                 '>=',
                 new midgard_query_value($year)
             );
@@ -261,7 +273,7 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         {
             // Regular user, hide unapproved articles
             $approved_constraint = new midgard_query_constraint(
-                new midgard_query_property('metadata.isapproved'),
+                new midgard_query_property('wineisapproved'),
                 '=',
                 new midgard_query_value(true)
             );
@@ -271,7 +283,7 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         if ($exception_guid)
         {
             $exception_constraint = new midgard_query_constraint(
-                new midgard_query_property('guid'),
+                new midgard_query_property('wineguid'),
                 '<>',
                 new midgard_query_value($exception_guid)
             );
@@ -283,13 +295,13 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         $qc->add_constraint($year_constraint);
 
         $qs->set_constraint($qc);
-        $qs->add_order(new midgard_query_property('metadata.created'), SORT_DESC);
+        $qs->add_order(new midgard_query_property('wineyear'), SORT_DESC);
+        $qs->add_order(new midgard_query_property('winetitle'), SORT_ASC);
 
         unset($wine_constraint);
         unset($year_constraint);
 
         return $qs;
     }
-
 }
 ?>

@@ -4,7 +4,7 @@
         </a>
         <h1 tal:condition="true: current_component/admin" tal:content="plantation/title" tal:attributes="property plantation/rdfmapper/title">Title</h1>
 
-        <span i18n:translate="'caption_planted'">caption</span>
+        <span class="date" i18n:translate="'caption_planted'">caption</span>
         <div class="planted" id="planted" tal:attributes="property plantation/rdfmapper/planted" tal:content="structure plantation/planted">
           Planted
         </div>

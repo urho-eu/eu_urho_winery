@@ -57,6 +57,11 @@
             <property>harvest:title</property>
             <required>true</required>
         </property>
+        <property name="date" type="datetime">
+            <description>Date of harvest</description>
+            <property>harvest:date</property>
+            <contenttype>datetime</contenttype>
+        </property>
         <property name="description" type="text">
             <description>Textual description of the harvest</description>
             <property>harvest:description</property>

@@ -15,6 +15,20 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
     }
 
     /**
+     * Redirect / requests
+     */
+    public function get_redirect(array $args)
+    {
+        $this->mvc->head->relocate
+        (
+            $this->mvc->dispatcher->generate_url
+            (
+                '/', array(), $this->request
+            )
+        );
+    }
+
+    /**
      * @todo: docs
      */
     public function load_object(array $args)
@@ -153,18 +167,25 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
 
         $changed_years = array();
 
-        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
-            'year_read',
-            array(
-                'year' => $this->mvc->configuration->starting_year,
-            ),
-            $this->request
-        );
+        if (midgardmvc_ui_create_injector::can_use())
+        {
+            $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
+                'year_read',
+                array(
+                    'year' => $this->mvc->configuration->starting_year,
+                ),
+                $this->request
+            );
+        }
 
         foreach ($years as $year)
         {
             $year->localurl = false;
-            $year->urlpattern = $this->data['urlpattern'];
+
+            if (midgardmvc_ui_create_injector::can_use())
+            {
+                $year->urlpattern = $this->data['urlpattern'];
+            }
 
             if (! isset($args['year']))
             {
@@ -212,15 +233,22 @@ class eu_urho_winery_controllers_year extends midgardmvc_core_controllers_basecl
             {
                 $this->data['years']->rewind();
                 $this->data['year'] = $this->data['years']->current();
+                $this->data['years'] = false;
             }
         }
         else
         {
+            if (count($changed_years) == 1)
+            {
+                $this->data['year'] = $changed_years[0];
+            }
             if (! count($changed_years))
             {
                 throw new midgardmvc_exception_notfound("No data published for " . $year);
             }
         }
+
+        unset($changed_years);
     }
 
     /**

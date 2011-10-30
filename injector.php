@@ -44,12 +44,26 @@ class eu_urho_winery_injector
 
         $route = $request->get_route();
 
-        if (   (   $route->id == "plantation_index"
-                || $route->id == "plantation_read")
+        if (   $route->id == "year_read"
+            || $route->id == "year_wine_read")
+        {
+            $this->add_wine_elements();
+        }
+
+        if (   substr($route->id, 0, 7) == "harvest"
             && midgardmvc_ui_create_injector::can_use())
         {
-            //$this->add_datetime_elements();
+            $this->add_datetime_elements();
         }
+    }
+
+    /**
+     * Adds js and css files to head
+     */
+    private function add_wine_elements()
+    {
+        $this->mvc->head->enable_jquery();
+        $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init_wine.js');
     }
 
     /**
@@ -61,7 +75,7 @@ class eu_urho_winery_injector
         $this->mvc->head->enable_jquery_ui();
 
         $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/jquery.ui.datetime.min.js');
-        $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init.js');
+        $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init_harvest.js');
 
         $this->mvc->head->add_link
         (
@@ -82,9 +96,12 @@ class eu_urho_winery_injector
         $wine->title = self::cleanup_title($wine->title);
         $wine->name = self::generate_name($wine->title);
 
-        $qs = eu_urho_winery_controllers_wine::prepare_qs($wine->harvest, $wine->name, $wine->guid);
+        $harvest = new eu_urho_winery_harvest($wine->harvest);
+
+        $qs = eu_urho_winery_controllers_wine::prepare_qs($harvest->year, $wine->name, $wine->guid);
         $qs->execute();
         $wines = $qs->list_objects();
+
         if (count($wines))
         {
             //make the name unique

@@ -75,3 +75,9 @@ msgstr "Harvest"
 
 msgid "caption_see_wine"
 msgstr "Details"
+
+msgid "title_wines_produced_in_year"
+msgstr "Wines"
+
+msgid "message_no_wines_this_year"
+msgstr "There are no wines available from this year."

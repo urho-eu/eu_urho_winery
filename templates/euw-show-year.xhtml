@@ -1,7 +1,7 @@
 <tal:block tal:condition="true: current_component/addyear">
   <h2 i18n:translate="'title_years'">Years</h2>
   <ul tal:condition="true: current_component/container_type" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof current_component/container_type; mgd:urlpattern current_component/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
-    <li tal:repeat="year current_component/years">
+    <li tal:condition="true: current_component/years" tal:repeat="year current_component/years">
       <mgd:include>euw-rdf-year</mgd:include>
     </li>
   </ul>
@@ -15,3 +15,9 @@
     <mgd:include>euw-nonrdf-year</mgd:include>
   </tal:block>
 </tal:block>
+
+<tal:block tal:condition="true: current_component/year">
+  <h3 i18n:translate="'title_wines_produced_in_year'">Wines produced in this year</h3>
+  <tal:block tal:define="year current_component/year/title" tal:content="structure php:midgardmvc.templating.dynamic_load('eu_urho_winery', 'wine_year_index', array('year' => year))"></tal:block>
+</tal:block>
+

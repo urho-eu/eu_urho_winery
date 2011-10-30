@@ -15,12 +15,12 @@
         </div>
 
         <span i18n:translate="'caption_harvest'">caption</span>
-        <select id="harvestselect" tal:define="harvests current_component/harvests" onchange="jQuery('#harvest').html(jQuery('#harvestselect :selected').val()); midgardCreate.Editable.setModified(true);">
+        <select class="harvestselect" tal:define="harvests current_component/harvests">
           <option tal:repeat="harvest harvests" tal:attributes="value harvest/id">
             ${harvest/title}, ${harvest/year}
           </option>
         </select>
-        <span class="hidden" id="harvest" property="wine:harvest">${wine/harvest}</span>
+        <span class="hidden harvest" property="wine:harvest">${wine/harvest}</span>
 
         <a class="link" tal:condition="true: wine/localurl" tal:attributes="href wine/localurl" i18n:translate="'caption_see_wine'">
           See wine
