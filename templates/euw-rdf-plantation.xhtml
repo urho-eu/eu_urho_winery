@@ -5,9 +5,12 @@
         <h1 tal:condition="true: current_component/admin" tal:content="plantation/title" tal:attributes="property plantation/rdfmapper/title">Title</h1>
 
         <span class="date" i18n:translate="'caption_planted'">caption</span>
-        <div class="planted" id="planted" tal:attributes="property plantation/rdfmapper/planted" tal:content="structure plantation/planted">
-          Planted
-        </div>
+        <input class="plantedpicker"/>
+        <span class="hidden planted" tal:attributes="property plantation/rdfmapper/planted" tal:content="plantation/planted">
+        </span>
+
+        <br/>
+
         <span i18n:translate="'caption_description'">caption</span>
         <div id="description" tal:attributes="property plantation/rdfmapper/description" tal:content="structure plantation/description">
           Description

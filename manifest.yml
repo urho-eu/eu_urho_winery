@@ -33,7 +33,7 @@ routes:
         template_aliases:
             content: euw-show-plantation
     plantation_read:
-        path: /plantation/$plantation
+        path: /plantation/{$plantation}
         controller: eu_urho_winery_controllers_plantation
         action: plantations
         template_aliases:

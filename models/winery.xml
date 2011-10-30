@@ -5,7 +5,7 @@
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
-        <property name="title" type="unsigned integer">
+        <property name="title" type="unsigned integer" index="yes">
             <description>Year; e.g. 2010</description>
             <property>year:title</property>
             <required>true</required>
@@ -21,7 +21,7 @@
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
-        <property name="name" type="string">
+        <property name="name" type="string" index="yes">
             <description>Unique name of the wine; generated from the title</description>
             <required>true</required>
         </property>
@@ -48,7 +48,7 @@
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
-        <property name="name" type="string">
+        <property name="name" type="string" index="yes">
             <description>Unique name of the wine; generated from the title</description>
             <required>true</required>
         </property>
@@ -60,7 +60,6 @@
         <property name="date" type="datetime">
             <description>Date of harvest</description>
             <property>harvest:date</property>
-            <contenttype>datetime</contenttype>
         </property>
         <property name="description" type="text">
             <description>Textual description of the harvest</description>
@@ -91,7 +90,7 @@
         <property name="id" type="unsigned integer" primaryfield="id">
             <description>Local non-replication-safe database identifier</description>
         </property>
-        <property name="name" type="string">
+        <property name="name" type="string" index="yes">
             <description>Unique name of the wine; generated from the title</description>
             <required>true</required>
         </property>
@@ -101,10 +100,9 @@
             <required>true</required>
             <contenttype>text</contenttype>
         </property>
-        <property name="planted" type="string">
+        <property name="planted" type="datetime">
             <description>Date when plantation was made</description>
             <property>plantation:planted</property>
-            <contenttype>datetime</contenttype>
         </property>
         <property name="description" type="text">
             <description>Textual description of the plantation</description>

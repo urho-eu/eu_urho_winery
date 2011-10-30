@@ -6,6 +6,7 @@ class eu_urho_winery_injector
 {
     var $mvc = null;
     var $request = null;
+    var $route = null;
 
     public function __construct()
     {
@@ -42,15 +43,16 @@ class eu_urho_winery_injector
         // We inject the template to provide eu_urho_winery styling
         $request->add_component_to_chain(midgardmvc_core::get_instance()->component->get('eu_urho_winery'), true);
 
-        $route = $request->get_route();
+        $this->route = $request->get_route();
 
-        if (   $route->id == "year_read"
-            || $route->id == "year_wine_read")
+        if (   $this->route->id == "year_read"
+            || $this->route->id == "year_wine_read")
         {
             $this->add_wine_elements();
         }
 
-        if (   substr($route->id, 0, 7) == "harvest"
+        if (   (   substr($this->route->id, 0, 7) == "harvest"
+                || substr($this->route->id, 0, 10) == "plantation")
             && midgardmvc_ui_create_injector::can_use())
         {
             $this->add_datetime_elements();
@@ -74,9 +76,17 @@ class eu_urho_winery_injector
         $this->mvc->head->enable_jquery();
         $this->mvc->head->enable_jquery_ui();
 
-        $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/jquery.ui.datetime.min.js');
-        $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init_harvest.js');
+        if (substr($this->route->id, 0, 7) == "harvest")
+        {
+            $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init_harvest.js');
+        }
 
+        if (substr($this->route->id, 0, 10) == "plantation")
+        {
+            $this->mvc->head->add_jsfile(MIDGARDMVC_STATIC_URL . '/eu_urho_winery/js/init_plantation.js');
+        }
+
+/*
         $this->mvc->head->add_link
         (
             array
@@ -86,6 +96,7 @@ class eu_urho_winery_injector
                 'href' => MIDGARDMVC_STATIC_URL . '/eu_urho_winery/css/jquery.ui.datetime.css'
             )
         );
+*/
     }
 
     /**

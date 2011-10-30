@@ -122,12 +122,19 @@ class eu_urho_winery_controllers_plantation extends midgardmvc_core_controllers_
 
         $changed_plantations = array();
 
-        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url('plantation_read', array('plantation' => 'plantation'), $this->request);
+        if (midgardmvc_ui_create_injector::can_use())
+        {
+            $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url('plantation_read', array('plantation' => 'plantation'), $this->request);
+        }
 
         foreach ($plantations as $plantation)
         {
             $plantation->localurl = false;
-            $plantation->urlpattern = $this->data['urlpattern'];
+
+            if (midgardmvc_ui_create_injector::can_use())
+            {
+                $plantation->urlpattern = $this->data['urlpattern'];
+            }
 
             if (! isset($args['plantation']))
             {
