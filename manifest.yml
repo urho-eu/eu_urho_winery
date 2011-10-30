@@ -16,10 +16,10 @@ routes:
             content: euw-show-year
     year_read:
         path: /{$int:year}
-        controller: eu_urho_winery_controllers_year
-        action: years
+        controller: eu_urho_winery_controllers_wine
+        action: wines
         template_aliases:
-            content: euw-show-year
+            content: euw-show-wine
     year_wine_read:
         path: /{$int:year}/{$wine}
         controller: eu_urho_winery_controllers_wine

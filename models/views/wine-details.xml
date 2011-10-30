@@ -5,9 +5,6 @@
         <join type="left" class="eu_urho_winery_harvest">
             <condition left="eu_urho_winery_wine:harvest" right="eu_urho_winery_harvest:id" />
         </join>
-        <join type="left" class="eu_urho_winery_year">
-            <condition left="eu_urho_winery_harvest:year" right="eu_urho_winery_year:title" />
-        </join>
         <join type="left" class="eu_urho_winery_plantation">
             <condition left="eu_urho_winery_harvest:plantation" right="eu_urho_winery_plantation:id" />
         </join>
@@ -29,13 +26,9 @@
         <property name="winebottles" use="eu_urho_winery_wine:bottles">
             <description>Bottles produced from the wine</description>
         </property>
-        <property name="wineyear" use="eu_urho_winery_harvest:year">
-            <description>Year when the wine was produced</description>
-        </property>
         <property name="wineisapproved" use="eu_urho_winery_wine:metadata.isapproved">
             <description>Flag to show if the wine object has been approved</description>
         </property>
-
         <property name="harvestdate" use="eu_urho_winery_harvest:date">
             <description>Exact date of the harvest</description>
         </property>

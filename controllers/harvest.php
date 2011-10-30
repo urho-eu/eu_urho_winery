@@ -51,7 +51,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         {
             // Regular user, hide unapproved articles
             // TODO: This check should be moved to authentication
-            throw new midgardmvc_exception_notfound("No data published for " . $args['harvest']);
+            throw new midgardmvc_exception_notfound("No data published for " . $args['year'] . '/' . $args['harvest']);
         }
 
         $this->object->rdfmapper = new midgardmvc_ui_create_rdfmapper($this->object);
@@ -112,36 +112,20 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         $this->data['harvests'] = array();
         $this->data['container_type'] = 'http://purl.org/dc/dcmitype/Collection';
 
-        if (   ! isset($args['harvest'])
-            && ! midgardmvc_ui_create_injector::can_use())
-        {
-            throw new midgardmvc_exception_notfound("Please specify a valid harvest");
-        }
-
-        $qs = $this->prepare_qs(null, (isset($args['harvest'])) ? $args['harvest'] : '');
+        $qs = $this->prepare_qs((isset($args['year'])) ? $args['year'] : null, (isset($args['harvest'])) ? $args['harvest'] : null);
         $qs->execute();
         $harvests = $qs->list_objects();
 
-        $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
-            'harvest_read',
-            array (
-                'year' => $this->mvc->configuration->starting_year,
-                'harvest' => 'harvest'
-            ),
-            $this->request
-        );
-
-        // get all years
-        $qs = eu_urho_winery_controllers_year::prepare_qs();
-        $qs->execute();
-        $years = $qs->list_objects();
-        $this->data['years'] = new midgardmvc_ui_create_container();
-        //$dummy = new eu_urho_winery_year();
-        //$this->data['years']->set_placeholder($dummy);
-
-        foreach ($years as $year)
+        if (midgardmvc_ui_create_injector::can_use())
         {
-            $this->data['years']->attach($year);
+            $this->data['urlpattern'] = $this->mvc->dispatcher->generate_url(
+                'harvest_read',
+                array (
+                    'year' => $this->mvc->configuration->starting_year,
+                    'harvest' => 'harvest'
+                ),
+                $this->request
+            );
         }
 
         // get all plantations
@@ -149,8 +133,8 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         $qs->execute();
         $plantations = $qs->list_objects();
         $this->data['plantations'] = new midgardmvc_ui_create_container();
-        //$dummy = new eu_urho_winery_plantation();
-        //$this->data['plantations']->set_placeholder($dummy);
+        $dummy = new eu_urho_winery_plantation();
+        $this->data['plantations']->set_placeholder($dummy);
 
         foreach ($plantations as $plantation)
         {
@@ -160,11 +144,15 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         foreach ($harvests as $harvest)
         {
             $harvest->localurl = false;
-            $harvest->urlpattern = $this->data['urlpattern'];
+            if (midgardmvc_ui_create_injector::can_use())
+            {
+                $harvest->urlpattern = $this->data['urlpattern'];
+            }
 
             if (! isset($args['harvest']))
             {
-                $harvest->localurl = $this->mvc->dispatcher->generate_url('harvest_read', array('year' => $harvest->year, 'harvest' => $harvest->name), $this->request);
+                $year = (int)substr($harvest->date->__toString(), 0, 4);
+                $harvest->localurl = $this->mvc->dispatcher->generate_url('harvest_read', array('year' => $year, 'harvest' => $harvest->name), $this->request);
             }
 
             $changed_harvests[] = $harvest;
@@ -176,9 +164,14 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         if (midgardmvc_ui_create_injector::can_use())
         {
             $this->data['admin'] = true;
-            $this->data['addharvest'] = true;
-            // Define placeholder to be used with UI on empty containers
 
+            if ( ! (   isset($args['year'])
+                    && isset($args['harvest'])))
+            {
+                $this->data['addharvest'] = true;
+            }
+
+            // Define placeholder to be used with UI on empty containers
             $dummy = new eu_urho_winery_harvest();
             $this->data['harvests'] = new midgardmvc_ui_create_container();
             $this->data['harvests']->set_placeholder($dummy);
@@ -201,6 +194,13 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
                 $this->data['harvests']->rewind();
                 $this->data['harvest'] = $this->data['harvests']->current();
             }
+
+            if (count($this->data['plantations']))
+            {
+                $this->data['default_plantation'] = $plantations[0]->id;
+            }
+
+            $this->data['default_date'] = new midgard_datetime();
         }
         else
         {
@@ -210,7 +210,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
             }
             if (! count($changed_harvests))
             {
-                throw new midgardmvc_exception_notfound("No data published for " . $args['harvest']);
+                throw new midgardmvc_exception_notfound("No data published for " . $args['year'] . '/' . $args['harvest']);
             }
         }
     }
@@ -224,28 +224,46 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         $exception_constraint = null;
         $approved_constraint = null;
 
+        $mvc = midgardmvc_core::get_instance();
+
         $storage = new midgard_query_storage('eu_urho_winery_harvest');
         $qs = new midgard_query_select($storage);
         $qc = new midgard_query_constraint_group('AND');
 
+        $qc->add_constraint(new midgard_query_constraint(
+            new midgard_query_property('id'),
+            '>',
+            new midgard_query_value(0)
+        ));
+
         if ($year)
         {
-            $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('year'),
-                '=',
-                new midgard_query_value($year)
+            $startdate = $year . '-01-01';
+            $enddate = $year . '-12-31';
+            $year_constraint = new midgard_query_constraint_group('AND');
+
+            $start = new midgard_query_constraint(
+                new midgard_query_property('date'),
+                '>=',
+                new midgard_query_value($startdate)
             );
-        }
-        else
-        {
-            $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('year'),
-                '<>',
-                new midgard_query_value(0)
+            $end = new midgard_query_constraint(
+                new midgard_query_property('date'),
+                '<=',
+                new midgard_query_value($enddate)
             );
+
+            $year_constraint->add_constraint($start);
+            $year_constraint->add_constraint($end);
+
+            unset($startdate);
+            unset($enddate);
+            unset($start);
+            unset($end);
+
+            $qc->add_constraint($year_constraint);
+            unset($year_constraint);
         }
-        $qc->add_constraint($year_constraint);
-        unset($year_constraint);
 
         if ($harvest)
         {
@@ -290,7 +308,7 @@ class eu_urho_winery_controllers_harvest extends midgardmvc_core_controllers_bas
         }
 
         $qs->set_constraint($qc);
-        $qs->add_order(new midgard_query_property('name'), SORT_ASC);
+        $qs->add_order(new midgard_query_property('date'), SORT_ASC);
 
         return $qs;
     }

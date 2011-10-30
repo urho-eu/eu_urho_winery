@@ -80,10 +80,6 @@
             <description>Plantation where the harvest is from</description>
             <property>harvest:plantation</property>
         </property>
-        <property name="year" type="unsigned integer" link="eu_urho_winery_year:title">
-            <description>Year the harvest was done</description>
-            <property>harvest:year</property>
-        </property>
     </type>
 
     <type name="eu_urho_winery_plantation" table="eu_urho_winery_plantation">

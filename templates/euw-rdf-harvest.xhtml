@@ -5,8 +5,12 @@
         <h1 tal:condition="true: current_component/admin" tal:content="harvest/title" tal:attributes="default 'title'; property harvest/rdfmapper/title">Title</h1>
 
         <span class="date" i18n:translate="'caption_date'">caption</span>
-        <span class="hidden date" property="harvest:date">${harvest/date}</span>
-        <span class="hidden year" property="harvest:year">${harvest/year}</span>
+        <input class="datepicker"/>
+        <span class="hidden harvestdate" tal:attributes="property harvest/rdfmapper/date; default current_component/default_date" tal:content="harvest/date">
+          ${harvest/date}
+        </span>
+
+        <br/>
 
         <span i18n:translate="'caption_description'">caption</span>
         <div id="description" tal:attributes="property harvest/rdfmapper/description; default 'description'" tal:content="structure harvest/description">
@@ -23,12 +27,18 @@
           The must sugar concentration in MM°
         </div>
 
-        <select id="plantationselect" tal:define="plantations current_component/plantations" onchange="jQuery('#plantation').html(jQuery('#plantationselect :selected').val()); midgardCreate.Editable.setModified(true);">
-          <option tal:repeat="plantation plantations" tal:attributes="value plantation/id">
-            ${plantation/title}
-          </option>
+        <span i18n:translate="'caption_plantation'">caption</span>
+        <select class="plantationselect" tal:condition="true: current_component/plantations" tal:define="plantations current_component/plantations">
+          <tal:block tal:repeat="plantation plantations">
+            <option tal:condition="php: harvest.plantation == plantation.id" tal:attributes="value plantation/id; selected 'selected'">
+              ${plantation/title}
+            </option>
+            <option tal:condition="php: harvest.plantation != plantation.id" tal:attributes="value plantation/id">
+              ${plantation/title}
+            </option>
+          </tal:block>
         </select>
-        <span class="hidden" id="plantation" property="harvest:plantation">${harvest/plantation}</span>
+        <span class="hidden plantation" property="harvest:plantation" tal:attributes="default current_component/default_plantation">${harvest/plantation}</span>
 
         <a class="link" tal:condition="true: harvest/localurl" tal:attributes="href harvest/localurl" i18n:translate="'caption_see_harvest'">
           See harvest

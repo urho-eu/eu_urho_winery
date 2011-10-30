@@ -1,6 +1,6 @@
 <tal:block tal:condition="true: current_component/addharvest">
   <h2 i18n:translate="'title_harvests'">harvests</h2>
-  <ul tal:condition="true: current_component/container_type" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof current_component/container_type; mgd:urlpattern current_component/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
+  <ul class="harvests" tal:condition="true: current_component/container_type" mgd:order="desc" tal:attributes="mgd:baseurl request/uri; typeof current_component/container_type; mgd:urlpattern current_component/urlpattern" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03">
     <li tal:repeat="harvest current_component/harvests">
       <mgd:include>euw-rdf-harvest</mgd:include>
     </li>

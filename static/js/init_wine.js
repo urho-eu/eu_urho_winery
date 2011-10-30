@@ -1,4 +1,4 @@
-jQuery(document).ready(function($)
+jQuery(document).ready(function(jQuery)
 {
     bind_harvest_change();
 

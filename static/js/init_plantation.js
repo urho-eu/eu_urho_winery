@@ -1,6 +1,9 @@
-jQuery(document).ready(function($)
+jQuery(document).ready(function(jQuery)
 {
-    bind_date_change();
+    if (jQuery('ul.plantations li').length > 0)
+    {
+        bind_date_change();
+    }
 
     jQuery('button.add').bind('click', function(event)
     {
@@ -11,12 +14,14 @@ jQuery(document).ready(function($)
 
 function bind_date_change()
 {
-    var current = jQuery('input.plantedpicker').next().html().substr(0, 10);
-
-    if (current !== '0001-01-01')
+    jQuery('input.plantedpicker').each(function(index, element)
     {
-        jQuery('input.plantedpicker').val(current);
-    }
+        var current = jQuery(element).next().html().substr(0, 10);
+        if (current !== '0001-01-01')
+        {
+            jQuery(element).val(current);
+        }
+    });
 
     jQuery('input.plantedpicker').datepicker(
     {
@@ -29,7 +34,8 @@ function bind_date_change()
         maxDate: '+0d',
         onSelect: function(dateText, inst)
         {
-            jQuery(this).next().html(dateText + 'T00:00:00+00:00');
+            var tz = wineryUtils.determineTimeZone();
+            jQuery(this).next().html(dateText + 'T00:00:00' + tz);
             midgardCreate.Editable.setModified(true);
         }
     });

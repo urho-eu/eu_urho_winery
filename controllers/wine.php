@@ -139,6 +139,7 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         {
             foreach ($harvests as $harvest)
             {
+                $harvest->year = (int)substr($harvest->date->__toString(), 0, 4);
                 $this->data['harvests']->attach($harvest);
             }
         }
@@ -159,7 +160,8 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
 
             if (! isset($args['wine']))
             {
-                $wine->localurl = $this->mvc->dispatcher->generate_url('year_wine_read', array('year' => $wine->wineyear, 'wine' => $wine->winename), $this->request);
+                $year = (int)substr($wine->harvestdate->__toString(), 0, 4);
+                $wine->localurl = $this->mvc->dispatcher->generate_url('year_wine_read', array('year' => $year, 'wine' => $wine->winename), $this->request);
             }
 
             $changed_wines[] = $wine;
@@ -237,9 +239,39 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         $qs = new midgard_query_select($storage);
         $qc = new midgard_query_constraint_group('AND');
 
-        if (! $year)
+        $qc->add_constraint(new midgard_query_constraint(
+            new midgard_query_property('wineid'),
+            '>',
+            new midgard_query_value(0)
+        ));
+
+        if ($year)
         {
-            $year = $mvc->configuration->starting_year;
+            $startdate = $year . '-01-01';
+            $enddate = $year . '-12-31';
+            $year_constraint = new midgard_query_constraint_group('AND');
+
+            $start = new midgard_query_constraint(
+                new midgard_query_property('harvestdate'),
+                '>=',
+                new midgard_query_value($startdate)
+            );
+            $end = new midgard_query_constraint(
+                new midgard_query_property('harvestdate'),
+                '<=',
+                new midgard_query_value($enddate)
+            );
+
+            $year_constraint->add_constraint($start);
+            $year_constraint->add_constraint($end);
+
+            $qc->add_constraint($year_constraint);
+
+            unset($year_constraint);
+            unset($startdate);
+            unset($enddate);
+            unset($start);
+            unset($end);
         }
 
         if ($name)
@@ -249,11 +281,6 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
                 '=',
                 new midgard_query_value($name)
             );
-            $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('wineyear'),
-                '=',
-                new midgard_query_value($year)
-            );
         }
         else
         {
@@ -261,11 +288,6 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
                 new midgard_query_property('winename'),
                 '<>',
                 new midgard_query_value($name)
-            );
-            $year_constraint = new midgard_query_constraint(
-                new midgard_query_property('wineyear'),
-                '>=',
-                new midgard_query_value($year)
             );
         }
 
@@ -292,14 +314,12 @@ class eu_urho_winery_controllers_wine extends midgardmvc_core_controllers_basecl
         }
 
         $qc->add_constraint($wine_constraint);
-        $qc->add_constraint($year_constraint);
 
         $qs->set_constraint($qc);
-        $qs->add_order(new midgard_query_property('wineyear'), SORT_DESC);
+        $qs->add_order(new midgard_query_property('harvestdate'), SORT_DESC);
         $qs->add_order(new midgard_query_property('winetitle'), SORT_ASC);
 
         unset($wine_constraint);
-        unset($year_constraint);
 
         return $qs;
     }
