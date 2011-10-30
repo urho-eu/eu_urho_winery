@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Schema xmlns="http://www.midgard-project.org/repligard/1.4">
+
+    <view name="eu_urho_winery_wine_details" table="eu_urho_winery_wine">
+        <join type="left" class="eu_urho_winery_harvest">
+            <condition left="eu_urho_winery_wine:harvest" right="eu_urho_winery_harvest:id" />
+        </join>
+        <join type="left" class="eu_urho_winery_year">
+            <condition left="eu_urho_winery_harvest:year" right="eu_urho_winery_year:title" />
+        </join>
+        <join type="left" class="eu_urho_winery_plantation">
+            <condition left="eu_urho_winery_harvest:plantation" right="eu_urho_winery_plantation:id" />
+        </join>
+        <property name="wineid" use="eu_urho_winery_wine:id">
+            <description>ID of the wine</description>
+        </property>
+        <property name="wineguid" use="eu_urho_winery_wine:guid">
+            <description>GUID of the wine</description>
+        </property>
+        <property name="winename" use="eu_urho_winery_wine:name">
+            <description>Full name of the wine</description>
+        </property>
+        <property name="winetitle" use="eu_urho_winery_wine:title">
+            <description>Short name of the wine</description>
+        </property>
+        <property name="winedescription" use="eu_urho_winery_wine:description">
+            <description>Long description of the wine</description>
+        </property>
+        <property name="winebottles" use="eu_urho_winery_wine:bottles">
+            <description>Bottles produced from the wine</description>
+        </property>
+        <property name="wineyear" use="eu_urho_winery_harvest:year">
+            <description>Year when the wine was produced</description>
+        </property>
+        <property name="wineisapproved" use="eu_urho_winery_wine:metadata.isapproved">
+            <description>Flag to show if the wine object has been approved</description>
+        </property>
+
+        <property name="harvestdate" use="eu_urho_winery_harvest:date">
+            <description>Exact date of the harvest</description>
+        </property>
+        <property name="plantationtitle" use="eu_urho_winery_plantation:title">
+            <description>Plantation where the vine was harvested</description>
+        </property>
+    </view>
+</Schema>
